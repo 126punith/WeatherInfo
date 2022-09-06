@@ -10,18 +10,26 @@ import {
 import React, { useState } from 'react';
 import Layout from '../constants/Layout';
 import Colors from '../constants/Colors';
+import { useAppDispatch } from '../hooks/hook';
+import { getCountries } from '../store/CountriesSlice';
 
 const { width } = Layout.window;
 
 const SearchScreen = (props: any) => {
   const { navigation } = props;
   const [show, setShow] = useState(false);
+  const [country, setCountry] = useState('');
+  const dispatch = useAppDispatch();
   const onFocusHandler = () => {
     setShow(true);
   };
 
   const onFocusOutHandler = () => {
     setShow(false);
+  };
+
+  const inputHandler = (name: string) => {
+    setCountry(name);
   };
 
   let placeholder = show ? '' : 'Enter Country Name';
@@ -31,13 +39,18 @@ const SearchScreen = (props: any) => {
       country: 'india',
     },
   ];
-  const submitHandler = () => {
-    navigation.navigate('CountryDetails', data);
+  const submitHandler = async () => {
+    console.log(country, country.length, 'country');
+
+    const countryName = country.length <= 3 ? country.toUpperCase() : country;
+    await dispatch(getCountries(country));
+    navigation.navigate('CountryDetails', {
+      countryName: countryName,
+    });
   };
   return (
     <>
       <SafeAreaView style={{ backgroundColor: Colors.white }} />
-
       <View style={styles.container}>
         <KeyboardAvoidingView
           behavior='padding'
@@ -51,6 +64,10 @@ const SearchScreen = (props: any) => {
               placeholderTextColor={Colors.silver}
               onFocus={onFocusHandler}
               onEndEditing={onFocusOutHandler}
+              onChangeText={(data) => {
+                inputHandler(data);
+              }}
+              autoCapitalize={'sentences'}
             />
             {show ? (
               <View style={styles.flowtingContainer}>
@@ -62,24 +79,21 @@ const SearchScreen = (props: any) => {
 
             <TouchableOpacity
               activeOpacity={0.5}
-              style={{
-                width: '50%',
-                justifyContent: 'center',
-                alignItems: 'center',
-                marginTop: 50,
-                alignSelf: 'center',
-                padding: 15,
-                borderRadius: 10,
-                backgroundColor: show ? Colors.lightSilver : Colors.purple,
-              }}
+              style={[
+                styles.submitBtn,
+                {
+                  backgroundColor: show ? Colors.lightSilver : Colors.purple,
+                },
+              ]}
               onPress={submitHandler}
             >
               <Text
-                style={{
-                  fontSize: 16,
-                  fontWeight: '800',
-                  color: show ? Colors.silver : Colors.white,
-                }}
+                style={[
+                  styles.submitText,
+                  {
+                    color: show ? Colors.silver : Colors.white,
+                  },
+                ]}
               >
                 Submit
               </Text>
@@ -120,5 +134,18 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: 'bold',
     color: Colors.silver,
+  },
+  submitBtn: {
+    width: '50%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 50,
+    alignSelf: 'center',
+    padding: 15,
+    borderRadius: 10,
+  },
+  submitText: {
+    fontSize: 16,
+    fontWeight: '800',
   },
 });
