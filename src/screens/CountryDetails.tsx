@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     marginLeft: 20,
     marginTop: 20,
-    height: window.width / 2,
+    height: window.width / 3,
   },
   contentText: {
     fontSize: 18,
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     color: Colors.white,
   },
   flagImage: {
-    height: 300,
+    height: '40%',
     width: '60%',
     marginLeft: 20,
     marginTop: 30,

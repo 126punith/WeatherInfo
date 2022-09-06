@@ -6,6 +6,8 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from 'react-native';
 import React, { useState } from 'react';
 import Layout from '../constants/Layout';
@@ -53,52 +55,61 @@ const SearchScreen = (props: any) => {
       <SafeAreaView style={{ backgroundColor: Colors.white }} />
       <View style={styles.container}>
         <KeyboardAvoidingView
-          behavior='padding'
+          behavior='height'
           enabled
-          style={styles.container}
+          style={{ flex: 1, justifyContent: 'center' }}
         >
-          <View>
-            <TextInput
-              style={styles.textInput}
-              placeholder={placeholder}
-              placeholderTextColor={Colors.silver}
-              onFocus={onFocusHandler}
-              onEndEditing={onFocusOutHandler}
-              onChangeText={(data) => {
-                inputHandler(data);
-              }}
-              autoCapitalize={'sentences'}
-            />
-            {show ? (
-              <View style={styles.flowtingContainer}>
-                <Text style={styles.flowtingText}>
-                  {show && 'Enter Country'}
-                </Text>
-              </View>
-            ) : null}
+          <TouchableWithoutFeedback
+            onPress={Keyboard.dismiss}
+            accessible={false}
+            style={{
+              flex: 1,
+            }}
+          >
+            <View>
+              <TextInput
+                style={styles.textInput}
+                placeholder={placeholder}
+                placeholderTextColor={Colors.silver}
+                onFocus={onFocusHandler}
+                onEndEditing={onFocusOutHandler}
+                onChangeText={(data) => {
+                  inputHandler(data);
+                }}
+                autoCapitalize={'sentences'}
+              />
+              {show ? (
+                <View style={styles.flowtingContainer}>
+                  <Text style={styles.flowtingText}>
+                    {show && 'Enter Country'}
+                  </Text>
+                </View>
+              ) : null}
 
-            <TouchableOpacity
-              activeOpacity={0.5}
-              style={[
-                styles.submitBtn,
-                {
-                  backgroundColor: show ? Colors.lightSilver : Colors.purple,
-                },
-              ]}
-              onPress={submitHandler}
-            >
-              <Text
+              <TouchableOpacity
+                activeOpacity={0.5}
                 style={[
-                  styles.submitText,
+                  styles.submitBtn,
                   {
-                    color: show ? Colors.silver : Colors.white,
+                    backgroundColor: show ? Colors.lightSilver : Colors.purple,
                   },
                 ]}
+                onPress={submitHandler}
+                disabled={country ? false : true}
               >
-                Submit
-              </Text>
-            </TouchableOpacity>
-          </View>
+                <Text
+                  style={[
+                    styles.submitText,
+                    {
+                      color: show ? Colors.silver : Colors.white,
+                    },
+                  ]}
+                >
+                  Submit
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
       </View>
     </>
@@ -110,7 +121,7 @@ export default SearchScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    // justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: Colors.white,
   },
